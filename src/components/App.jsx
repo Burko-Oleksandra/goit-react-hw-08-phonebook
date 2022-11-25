@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import shortid from 'shortid';
 import Notiflix from 'notiflix';
 import contacts from '../components/contacts.json';
-import Phonebook from './Phonebook';
+import ContactsList from './ContactsList';
 import ContactForm from './ContactForm';
 import Filter from './Filter';
 import { Wrapper, Title, SubTitle, PhonebookWrap, Total } from './App.styled';
@@ -87,7 +87,7 @@ class App extends Component {
         <PhonebookWrap>
           <SubTitle>Contacts</SubTitle>
           <Filter value={filter} onChange={this.changeFilter} />
-          <Phonebook
+          <ContactsList
             contacts={visibleContact}
             onDeleteContact={this.onDeleteContact}
           />
