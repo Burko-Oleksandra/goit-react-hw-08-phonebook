@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import shortid from 'shortid';
-import Notiflix from 'notiflix';
 import contacts from '../components/contacts.json';
+
 import ContactsList from './ContactsList';
 import ContactForm from './ContactForm';
 import Filter from './Filter';
+import Notification from './Notification';
 import { Wrapper, Title, SubTitle, PhonebookWrap, Total } from './App.styled';
 
 class App extends Component {
@@ -45,29 +46,7 @@ class App extends Component {
         contact.name.toLowerCase().includes(repeatContact)
       )
     ) {
-      Notiflix.Report.info(
-        `${name} is already in contacts`,
-        'Check the correct entry!',
-        'Ok',
-        {
-          width: '500px',
-          backgroundColor: '#e6e6fa',
-          borderRadius: '16px',
-          titleFontSize: '32px',
-          messageFontSize: '24px',
-          buttonFontSize: '35px',
-          cssAnimationStyle: 'zoom',
-
-          info: {
-            svgColor: '#483d8b',
-            titleColor: '#483d8b',
-            messageColor: '#000000',
-            buttonBackground: 'rgba(72,61,139,0.8)',
-            buttonColor: '#000000',
-            backOverlayColor: 'rgba(72,61,139,0.5)',
-          },
-        }
-      );
+      Notification(name);
     } else {
       this.setState(({ contacts }) => ({
         contacts: [newContact, ...contacts],
