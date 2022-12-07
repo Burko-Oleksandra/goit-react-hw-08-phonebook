@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import shortid from 'shortid';
-import contactsBook from '../components/contacts.json';
+import contactsBook from '../contacts.json';
 
-import ContactsList from './ContactsList';
-import ContactForm from './ContactForm';
-import Filter from './Filter';
-import Notification from './Notification';
+import ContactsList from '../ContactsList/ContactsList';
+import ContactForm from '../ContactForm/ContactForm';
+import Filter from '../Filter/Filter';
+import Notification from '../Notification';
 import { Wrapper, Title, SubTitle, PhonebookWrap, Total } from './App.styled';
 
 export default function App() {
   const [contacts, setContacts] = useState(
     JSON.parse(localStorage.getItem('contacts')) ?? contactsBook
   );
+
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
