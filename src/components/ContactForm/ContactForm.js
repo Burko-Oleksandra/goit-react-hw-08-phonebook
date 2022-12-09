@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import { FormWrap, Label, Input, Button } from './ContactForm.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../../redux/slices/contactSlice';
+import Notification from 'components/Notification';
 
-export default function ContactForm({ onSubmit }) {
+export default function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const contacts = useSelector(state => state.contacts.contacts);
+  const dispatch = useDispatch();
 
-  const nameImputId = shortid.generate();
-  const numberImputId = shortid.generate();
+  const nameInputId = shortid.generate();
+  const numberInputId = shortid.generate();
 
   function handleInputChange(event) {
     const formValue = event.currentTarget.name;
@@ -28,7 +32,21 @@ export default function ContactForm({ onSubmit }) {
 
   function handleSubmitForm(event) {
     event.preventDefault();
-    onSubmit({ name, number });
+    const data = {
+      id: shortid.generate(),
+      name,
+      number,
+    };
+    if (
+      contacts.find(
+        contact => contact.name.toLowerCase() === data.name.toLowerCase()
+      )
+    ) {
+      setName('');
+      setNumber('');
+      return Notification(data.name);
+    }
+    dispatch(addContact(data));
     resetForm();
   }
 
@@ -39,12 +57,12 @@ export default function ContactForm({ onSubmit }) {
 
   return (
     <FormWrap onSubmit={handleSubmitForm}>
-      <Label htmlFor={nameImputId}>
+      <Label htmlFor={nameInputId}>
         Name:
         <Input
           type="text"
           name="name"
-          id={nameImputId}
+          id={nameInputId}
           value={name}
           onChange={handleInputChange}
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -52,12 +70,12 @@ export default function ContactForm({ onSubmit }) {
           required
         />
       </Label>
-      <Label htmlFor={numberImputId}>
+      <Label htmlFor={numberInputId}>
         Number:
         <Input
           type="tel"
           name="number"
-          id={numberImputId}
+          id={numberInputId}
           value={number}
           onChange={handleInputChange}
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -69,69 +87,3 @@ export default function ContactForm({ onSubmit }) {
     </FormWrap>
   );
 }
-
-// class ContactForm extends Component {
-//   state = {
-//     name: '',
-//     number: '',
-//   };
-
-//   nameImputId = shortid.generate();
-//   numberImputId = shortid.generate();
-
-//   handleInputChange = event => {
-//     const { name, value } = event.currentTarget;
-//     this.setState({ [name]: value });
-//   };
-
-//   handleSubmitForm = event => {
-//     event.preventDefault();
-//     this.props.onSubmit(this.state);
-//     this.resetForm();
-//   };
-
-//   resetForm = () => {
-//     this.setState({ name: '', number: '' });
-//   };
-
-//   render() {
-//     const { name, number } = this.state;
-//     return (
-//       <FormWrap onSubmit={this.handleSubmitForm}>
-//         <Label htmlFor={this.nameImputId}>
-//           Name:
-//           <Input
-//             type="text"
-//             name="name"
-//             id={this.nameImputId}
-//             value={name}
-//             onChange={this.handleInputChange}
-//             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-//             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-//             required
-//           />
-//         </Label>
-//         <Label htmlFor={this.numberImputId}>
-//           Number:
-//           <Input
-//             type="tel"
-//             name="number"
-//             id={this.numberImputId}
-//             value={number}
-//             onChange={this.handleInputChange}
-//             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-//             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-//             required
-//           />
-//         </Label>
-//         <Button type="submit">Add contact</Button>
-//       </FormWrap>
-//     );
-//   }
-// }
-
-// export default ContactForm;
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
