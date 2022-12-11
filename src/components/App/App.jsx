@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import ContactsList from '../ContactsList/ContactsList';
@@ -8,10 +8,6 @@ import { Wrapper, Title, SubTitle, PhonebookWrap, Total } from './App.styled';
 
 export default function App() {
   const contacts = useSelector(state => state.contacts.contacts);
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
 
   return (
     <Wrapper>
