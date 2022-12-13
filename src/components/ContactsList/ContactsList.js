@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { deleteContact } from '../../redux/slices/contactSlice';
 import { deleteFetchContact } from '../../redux/thunks';
-import { useScrollbar } from 'components/useScrollbar';
+import { useScrollbar } from 'hooks/useScrollbar';
 import {
   List,
   Item,
