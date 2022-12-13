@@ -19,12 +19,12 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   margin-top: 10px;
-  width: 680px;
+  width: 880px;
   height: 40px;
   font-size: 24px;
   background-color: #e6e6fa;
   border-radius: 16px;
-  border: 5px solid #483d88;
+  border: 3px solid #483d88;
   outline: none;
   padding: 5px;
 `;

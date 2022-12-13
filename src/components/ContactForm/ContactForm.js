@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import shortid from 'shortid';
 import { FormWrap, Label, Input, Button } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../../redux/slices/contactSlice';
+import { addNewContact } from '../../redux/thunks/index';
 import Notification from 'components/Notification';
 
 export default function ContactForm() {
@@ -42,11 +42,10 @@ export default function ContactForm() {
         contact => contact.name.toLowerCase() === data.name.toLowerCase()
       )
     ) {
-      setName('');
-      setNumber('');
+      resetForm();
       return Notification(data.name);
     }
-    dispatch(addContact(data));
+    dispatch(addNewContact(data));
     resetForm();
   }
 
