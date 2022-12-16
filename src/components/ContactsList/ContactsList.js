@@ -1,63 +1,26 @@
-import React, { useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useGetContactQuery } from '../../redux/api/contactsApi';
+import ContactListItem from './ContactListItem';
+import Loader from 'components/Loader';
+import { List } from './ContactsList.styled';
 
-import { deleteContact } from '../../redux/slices/contactSlice';
-import { deleteFetchContact } from '../../redux/thunks';
-import { useScrollbar } from 'hooks/useScrollbar';
-import {
-  List,
-  Item,
-  Button,
-  Name,
-  Text,
-  InfoWrap,
-} from './ContactsList.styled';
+export default function ContactList() {
+  const { data, isFetching } = useGetContactQuery();
+  const filter = useSelector(state => state.filter);
 
-const getVisibleContacts = (contacts, filteredString) =>
-  contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filteredString.toLowerCase())
-  );
-
-export default function ContactsList() {
-  const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.contacts);
-  const filter = useSelector(state => state.contacts.filteredString);
-  const contactsWrap = useRef(null);
-  const hasScroll = contacts.length > 2;
-
-  useScrollbar(contactsWrap, hasScroll);
-
-  const deleteContactById = contactId => {
-    dispatch(deleteContact(contactId));
-    dispatch(deleteFetchContact(contactId));
-  };
-
-  const contactsList = getVisibleContacts(contacts, filter);
+  const contacts =
+    data && data.filter(contact => contact.name.toLowerCase().includes(filter));
 
   return (
-    <div
-      style={{
-        height: hasScroll ? '200px' : 'auto',
-        minHeight: '200px',
-        marginTop: '20px',
-      }}
-      ref={contactsWrap}
-    >
-      <List>
-        {contactsList.map(({ id, name, number }) => (
-          <>
-            <Item key={id}>
-              <InfoWrap>
-                <Name>{name}</Name>
-                <Text>{number}</Text>
-              </InfoWrap>
-              <Button type="button" onClick={() => deleteContactById(id)}>
-                Delete
-              </Button>
-            </Item>
-          </>
-        ))}
-      </List>
+    <div>
+      {data && data.length !== 0 && (
+        <List>
+          {contacts.map(contact => (
+            <ContactListItem key={contact.id} {...contact} />
+          ))}
+        </List>
+      )}
+      {isFetching && <Loader />}
     </div>
   );
 }

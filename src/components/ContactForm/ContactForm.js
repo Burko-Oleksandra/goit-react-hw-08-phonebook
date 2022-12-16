@@ -1,88 +1,91 @@
-import React, { useState } from 'react';
-import shortid from 'shortid';
-import { FormWrap, Label, Input, Button } from './ContactForm.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { addNewContact } from '../../redux/thunks/index';
-import Notification from 'components/Notification';
+import { useState, useEffect } from 'react';
+
+import {
+  useAddContactsMutation,
+  useGetContactQuery,
+} from '../../redux/api/contactsApi';
+import { MdAddIcCall } from 'react-icons/md';
+import {
+  Form,
+  Text,
+  LabelWrap,
+  InputName,
+  InputNumb,
+  Button,
+} from './ContactForm.styled';
+import NotificationInfo from 'components/Notification/NotificationInfo';
+import NotificationError from 'components/Notification/NotificationError';
 
 export default function ContactForm() {
+  const [addContacts, { isSuccess, error }] = useAddContactsMutation();
+  const { data } = useGetContactQuery();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const contacts = useSelector(state => state.contacts.contacts);
-  const dispatch = useDispatch();
+  const [nameForAlert, setnameForAlert] = useState('');
 
-  const nameInputId = shortid.generate();
-  const numberInputId = shortid.generate();
+  useEffect(() => {
+    isSuccess && NotificationInfo(` ${nameForAlert} added to contact book`);
+    error && NotificationError();
+  }, [error, isSuccess, nameForAlert]);
 
-  function handleInputChange(event) {
-    const formValue = event.currentTarget.name;
-    switch (formValue) {
+  const handleInputChange = ({ currentTarget: { name, value } }) => {
+    switch (name) {
       case 'name':
-        setName(event.currentTarget.value);
+        setName(value);
         break;
-
       case 'number':
-        setNumber(event.currentTarget.value);
+        setNumber(value);
         break;
-
       default:
-        throw new Error('Error');
+        return;
     }
-  }
+  };
 
-  function handleSubmitForm(event) {
+  const handleSubmit = event => {
     event.preventDefault();
-    const data = {
-      id: shortid.generate(),
-      name,
-      number,
-    };
-    if (
-      contacts.find(
-        contact => contact.name.toLowerCase() === data.name.toLowerCase()
-      )
-    ) {
-      resetForm();
-      return Notification(data.name);
-    }
-    dispatch(addNewContact(data));
-    resetForm();
-  }
-
-  function resetForm() {
+    setnameForAlert(name);
+    data.every(item => item.name.toLowerCase() !== name.toLowerCase())
+      ? addContacts({
+          name: name,
+          number: number,
+        })
+      : NotificationInfo(name);
     setName('');
     setNumber('');
-  }
+  };
 
   return (
-    <FormWrap onSubmit={handleSubmitForm}>
-      <Label htmlFor={nameInputId}>
-        Name:
-        <Input
-          type="text"
-          name="name"
-          id={nameInputId}
-          value={name}
-          onChange={handleInputChange}
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-        />
-      </Label>
-      <Label htmlFor={numberInputId}>
-        Number:
-        <Input
-          type="tel"
-          name="number"
-          id={numberInputId}
-          value={number}
-          onChange={handleInputChange}
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
-        />
-      </Label>
-      <Button type="submit">Add contact</Button>
-    </FormWrap>
+    <>
+      <Text>Add to contacts</Text>
+      <Form autoComplete="off" onSubmit={handleSubmit}>
+        <LabelWrap>
+          <label>Name</label>
+          <InputName
+            onChange={handleInputChange}
+            value={name}
+            type="text"
+            name="name"
+            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+            required
+            placeholder="enter name"
+          />
+          <label>Number</label>
+          <InputNumb
+            onChange={handleInputChange}
+            value={number}
+            type="tel"
+            name="number"
+            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+            required
+            placeholder="enter number"
+          />
+        </LabelWrap>
+        <Button type="submit" disabled={number && name ? false : true}>
+          <MdAddIcCall size="1.7rem" color="#efbad3" />
+        </Button>
+      </Form>
+    </>
   );
 }

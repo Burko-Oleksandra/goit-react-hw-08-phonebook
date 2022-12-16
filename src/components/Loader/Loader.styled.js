@@ -7,15 +7,14 @@ export const LoaderOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.8);
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
+  width: 712px;
+  height: 482px;
 `;
 
 export const LoaderWrap = styled.div`
   position: absolute;
+  top: 200px;
+  left: 320px;
   display: flex;
-  top: 50%;
-  left: 50%;
   width: 200px;
-  transform: translateX(-50%);
 `;

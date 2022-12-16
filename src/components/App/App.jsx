@@ -1,49 +1,46 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, lazy, Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-import { fetchContacts } from 'redux/thunks/index';
-import ContactsList from '../ContactsList/ContactsList';
-import ContactForm from '../ContactForm/ContactForm';
-import Filter from '../Filter/Filter';
-import Loader from 'components/Loader';
-import './App.css';
-import {
-  Wrapper,
-  ContactWrap,
-  Title,
-  SubTitle,
-  PhonebookWrap,
-  Total,
-} from './App.styled';
+import { getLoggedin, getToken } from '../../redux/slices/authSlice';
+import { useLazyGetCurrentUserQuery } from '../../redux/api/authApi';
+import PublicRoute from '../Routes/PublicRoute';
+import PrivateRoute from '../Routes/PrivateRoute';
+
+const Layout = lazy(() => import('../Layout/Layout'));
+const AuthPage = lazy(() => import('../../pages/AuthPage/authPage'));
+const RegisterPage = lazy(() =>
+  import('../../pages/RegisterPage/registerPage')
+);
+const LogInPage = lazy(() => import('../../pages/LoginPage/loginPage'));
+const ContactsPage = lazy(() => import('../../pages/ContactPage/contactPage'));
 
 export default function App() {
-  const contacts = useSelector(state => state.contacts.contacts);
-  const status = useSelector(state => state.contacts.status);
-  const error = useSelector(state => state.contacts.error);
-  const dispatch = useDispatch();
+  const token = useSelector(getToken);
+  const isLogdedin = useSelector(getLoggedin);
 
+  const [fetchUser] = useLazyGetCurrentUserQuery();
   useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+    if (!isLogdedin && token) {
+      fetchUser(null, { skip: !token });
+    }
+  }, [fetchUser, isLogdedin, token]);
 
   return (
-    <>
-      {status === 'loading' ? <Loader /> : ''}
-      {error && <h2>An error occured: {error}</h2>}
-      {!error && (
-        <Wrapper className="App">
-          <PhonebookWrap>
-            <Title>Phonebook</Title>
-            <ContactForm />
-          </PhonebookWrap>
-          <ContactWrap>
-            <SubTitle>Contacts</SubTitle>
-            <Filter />
-            <ContactsList contacts={contacts} />
-          </ContactWrap>
-          <Total>Total contacts in the phonebook: {contacts.length}</Total>
-        </Wrapper>
-      )}
-    </>
+    <Suspense>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route path="/" element={<PublicRoute />}>
+            <Route index element={<AuthPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LogInPage />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Route>
+          <Route path="/" element={<PrivateRoute />}>
+            <Route path="/contacts" element={<ContactsPage />} />
+          </Route>
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }

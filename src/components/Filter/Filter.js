@@ -1,21 +1,30 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilter } from '../../redux/slices/contactSlice';
+import { setFilter } from '../../redux/slices/filterSlice';
 
-import { Label, Input } from './Filter.styled';
+import { Form, Label, InputFilter, Button } from './Filter.styled';
+import { BiSearchAlt } from 'react-icons/bi';
 
 export default function Filter() {
-  const filter = useSelector(state => state.contacts.filter);
   const dispatch = useDispatch();
+  const filterValue = useSelector(state => state.filter);
 
-  function changeFilter(event) {
-    dispatch(setFilter(event.currentTarget.value.trim()));
-  }
+  const onFilterChange = event => {
+    dispatch(setFilter(event.currentTarget.value.toLowerCase()));
+  };
 
   return (
-    <Label>
-      Find contacts by name:
-      <Input type="text" value={filter} onChange={changeFilter} />
-    </Label>
+    <Form>
+      <Label>Filter</Label>
+      <InputFilter
+        onChange={onFilterChange}
+        value={filterValue}
+        type="text"
+        name="filter"
+        placeholder="Find contacts by name"
+      />
+      <Button type="button">
+        <BiSearchAlt size="1.5rem" color="#efbad3" />
+      </Button>
+    </Form>
   );
 }

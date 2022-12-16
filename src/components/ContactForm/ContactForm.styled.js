@@ -1,55 +1,70 @@
 import styled from '@emotion/styled';
 
-export const FormWrap = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  gap: 20px;
+export const Text = styled.p`
+  margin-left: 130px;
+  margin-top: 45px;
+  font-family: 'Indie Flower', cursive;
+  text-decoration-color: rgb(239, 186, 211);
+  z-index: 2;
+  color: black;
+  text-shadow: 1px 1px 2px rgb(239, 186, 211);
+  font-size: 24px;
 `;
 
-export const Label = styled.label`
+export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  justify-content: start;
-  align-items: start;
-  font-size: 24px;
-  font-weight: 500;
+  margin-left: 95px;
+  font-family: 'Indie Flower', cursive;
+  color: black;
+  text-shadow: 1px 1px 2px rgb(239, 186, 211);
 `;
 
-export const Input = styled.input`
-  margin-top: 10px;
-  width: 880px;
-  height: 40px;
-  font-size: 24px;
-  background-color: #e6e6fa;
-  border-radius: 16px;
-  border: 3px solid #483d88;
+export const LabelWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+`;
+
+export const InputName = styled.input`
+  font-family: 'Indie Flower', cursive;
+  color: black;
+  font-size: 18px;
+  width: 200px;
+  height: 10px;
+  padding: 10px;
+  border: 3px solid rgb(239, 186, 211);
+  border-radius: 4px;
+  margin-bottom: 10px;
   outline: none;
-  padding: 5px;
+
+  &::placeholder {
+    font-size: 14px;
+  }
+`;
+
+export const InputNumb = styled.input`
+  font-family: 'Indie Flower', cursive;
+  color: black;
+  font-size: 18px;
+  width: 200px;
+  height: 10px;
+  padding: 10px;
+  border: 3px solid rgb(239, 186, 211);
+  border-radius: 4px;
+  outline: none;
+  margin-bottom: 10px;
+
+  &::placeholder {
+    font-size: 14px;
+  }
 `;
 
 export const Button = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto auto;
-  width: 250px;
-  height: 50px;
-  font-size: 24px;
-  font-weight: 900;
-  border-radius: 16px;
-  background-color: #e6e6fa;
-  color: #483d8b;
-  border: 5px solid #483d8b;
   cursor: pointer;
-  box-shadow: inset rgba(72, 61, 139, 0.6) 0 -3px 8px,
-    inset rgba(72, 61, 139, 0.7) 0 3px 8px,
-    rgba(72, 61, 139, 0.8) 0 3px 8px -3px;
-
-  &:hover,
-  &:focus {
-    box-shadow: inset 2px 2px 5px rgba(72, 61, 139, 0.5),
-      1px 1px 5px rgba(72, 61, 139, 1);
-  }
+  margin-left: 80px;
+  margin-bottom: 30px;
+  width: 50px;
+  border: none;
+  background-color: inherit;
 `;
